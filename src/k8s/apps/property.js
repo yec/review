@@ -1,5 +1,5 @@
-const app = "starclub";
-const name = "starclub";
+const app = "property";
+const name = "property";
 
 export function deployment() {
   const namespace = this;
@@ -28,10 +28,6 @@ export function deployment() {
         "spec": {
           "volumes": [
             {
-              "name": "shared-data",
-              "emptyDir": {}
-            },
-            {
               "name": "site-data",
               "nfs": {
                 "server": "10.133.168.132",
@@ -42,14 +38,7 @@ export function deployment() {
           "containers": [
             {
               "name": "web",
-              "image": "starclub:latest",
-              "command": [
-                "/bin/bash"
-              ],
-              "args": [
-                "-c",
-                "/usr/bin/supervisord",
-              ],
+              "image": "the-star:latest",
               "ports": [
                 {
                   "containerPort": 80,
@@ -57,6 +46,10 @@ export function deployment() {
                 }
               ],
               "env": [
+                {
+                  "name": "DOMAIN",
+                  "value": `${namespace.metadata.name}.star-dev.casino.internal`
+                },
                 {
                   "name": "GIT_BRANCH",
                   "value": namespace.metadata.annotations.branch
@@ -74,22 +67,18 @@ export function deployment() {
               },
               "volumeMounts": [
                 {
-                  "name": "shared-data",
-                  "mountPath": "/var/www/edit"
-                },
-                {
                   "name": "site-data",
                   "mountPath": "/mnt"
                 }
               ],
               "imagePullPolicy": "Never"
             }
-          ]
+          ],
         }
       },
-    }
-  }
-};
+    },
+  };
+}
 
 export function service() {
   return {
@@ -119,7 +108,7 @@ export function service() {
 }
 
 export function ingress() {
-  const namespace = this
+  const namespace = this;
   return {
     "kind": "Ingress",
     "apiVersion": "extensions/v1beta1",
@@ -128,12 +117,37 @@ export function ingress() {
       "labels": {
         app
       },
-      "annotations": {}
     },
     "spec": {
       "rules": [
         {
-          "host": `${app}.${namespace.metadata.name}.star-dev.casino.internal`,
+          "host": `treasury.${namespace.metadata.name}.star-dev.casino.internal`,
+          "http": {
+            "paths": [
+              {
+                "backend": {
+                  "serviceName": name,
+                  "servicePort": 80
+                }
+              }
+            ]
+          }
+        },
+        {
+          "host": `star.${namespace.metadata.name}.star-dev.casino.internal`,
+          "http": {
+            "paths": [
+              {
+                "backend": {
+                  "serviceName": name,
+                  "servicePort": 80
+                }
+              }
+            ]
+          }
+        },
+        {
+          "host": `thedarling.${namespace.metadata.name}.star-dev.casino.internal`,
           "http": {
             "paths": [
               {
@@ -146,7 +160,6 @@ export function ingress() {
           }
         }
       ]
-    },
+    }
   };
 }
-

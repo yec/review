@@ -77,6 +77,8 @@ export function* createNamespace({ namespace }) {
 
   try {
     yield call(callApi, () => fetch(uri, config), [types.CREATE_NAMESPACE_SUCCESS, types.CREATE_NAMESPACE_FAILURE]);
+    yield put(k8sActions.createApp.call(body, 'mysql'));
+    yield put(k8sActions.getIngresses());
     yield put(k8sActions.getNamespace());
   } catch(error) {
     // yield put(k8sActions.get('Login Error:', error.message, 'danger'));

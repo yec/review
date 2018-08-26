@@ -22,12 +22,14 @@ function configureStoreProd(initialState) {
     reactRouterMiddleware,
   ];
 
-  sagaMiddleware.run(rootSaga);
-
-  return createStore(rootReducer, initialState, compose(
+  const store = createStore(rootReducer, initialState, compose(
     applyMiddleware(...middlewares)
     )
   );
+
+  sagaMiddleware.run(rootSaga);
+
+  return store;
 }
 
 function configureStoreDev(initialState) {

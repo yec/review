@@ -75,7 +75,7 @@ export function service() {
 }
 
 export function ingress() {
-  const namespace = this
+  const namespace = this;
   return {
     "kind": "Ingress",
     "apiVersion": "extensions/v1beta1",

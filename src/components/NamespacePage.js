@@ -44,7 +44,7 @@ const Ingresses = ({ ingresses, namespace, app }) => {
       && ingress.metadata.name == app
     ) {
       return ingress.spec.rules.map(rule => {
-        return <a key={ingress.metadata.uid} target="_blank" href={ 'http://' + rule.host}>{rule.host}</a>
+        return <div key={ingress.metadata.uid} ><a target="_blank" href={ 'http://' + rule.host}>{rule.host}</a></div>
       });
     }
   })
@@ -55,9 +55,10 @@ const AppList = ({ namespace, ingresses, createApp, getApp }) => {
   // getApp.call(namespace, 'nginx');
   return (
     <ul>
-      <li>nginx <Ingresses app={'nginx'} namespace={namespace} ingresses={ingresses} /> <button onClick={e => { createApp.call(namespace, 'nginx') }}>create</button><button disabled>delete</button> <button disabled>update</button></li>
-      <li>mysql <Ingresses app={'mysql'} namespace={namespace} ingresses={ingresses} /> <button onClick={e => { createApp.call(namespace, 'mysql') }}>create</button><button disabled>delete</button> <button disabled>update</button></li>
-      <li>starclub <Ingresses app={'starclub'} namespace={namespace} ingresses={ingresses} /> <button onClick={e => { createApp.call(namespace, 'starclub') }}>create</button><button disabled>delete</button> <button disabled>update</button></li>
+      <li>nginx <Ingresses app={'nginx'} namespace={namespace} ingresses={ingresses} /> <div><button onClick={e => { createApp.call(namespace, 'nginx') }}>create</button><button disabled>delete</button> <button disabled>update</button></div></li>
+      <li>mysql <Ingresses app={'mysql'} namespace={namespace} ingresses={ingresses} /> <div><button onClick={e => { createApp.call(namespace, 'mysql') }}>create</button><button disabled>delete</button> <button disabled>update</button></div></li>
+      <li>starclub <Ingresses app={'starclub'} namespace={namespace} ingresses={ingresses} /> <div><button onClick={e => { createApp.call(namespace, 'starclub') }}>create</button><button disabled>delete</button> <button disabled>update</button></div></li>
+      <li>property <Ingresses app={'property'} namespace={namespace} ingresses={ingresses} /> <div><button onClick={e => { createApp.call(namespace, 'property') }}>create</button><button disabled>delete</button> <button disabled>update</button></div></li>
     </ul>
   );
 }
