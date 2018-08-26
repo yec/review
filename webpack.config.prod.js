@@ -16,7 +16,10 @@ export default {
     extensions: ['*', '.js', '.jsx', '.json']
   },
   devtool: 'source-map', // more info:https://webpack.js.org/guides/production/#source-mapping and https://webpack.js.org/configuration/devtool/
-  entry: path.resolve(__dirname, 'src/index'),
+  entry: [
+    'babel-polyfill',
+    path.resolve(__dirname, 'src/index')
+  ],
   target: 'web',
   mode: 'production',
   output: {
@@ -55,7 +58,7 @@ export default {
       // To track JavaScript errors via TrackJS, sign up for a free trial at TrackJS.com and enter your token below.
       trackJSToken: ''
     }),
-  
+
   ],
   module: {
     rules: [

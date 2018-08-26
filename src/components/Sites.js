@@ -17,7 +17,7 @@ class Sites extends React.Component {
     return (
       <div>
         <Switch>
-          <Route exact path="/" component={NamespaceContainer} />
+          <Route path="/" component={NamespaceContainer} />
           <Route component={NotFoundPage} />
         </Switch>
       </div>

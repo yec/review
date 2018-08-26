@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-// import * as actions from '../../actions/fuelSavingsActions';
+import * as actions from '../../actions/k8sActions';
 import NamespacePage from '../NamespacePage';
 
 // export class NamespaceContainer extends React.Component {
@@ -31,16 +31,11 @@ import NamespacePage from '../NamespacePage';
 // };
 
 function mapStateToProps(state) {
-  return {
-    hello: '',
-    // fuelSavings: state.fuelSavings
-  };
+  return state
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    createNamespace: () => {}
-  }, dispatch);
+  return bindActionCreators(actions, dispatch);
 }
 
 export default connect(
