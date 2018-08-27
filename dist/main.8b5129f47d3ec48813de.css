@@ -5,7 +5,7 @@ body {
   line-height: 1.4em;
   color: #4d4d4d;
   min-width: 230px;
-  max-width: 550px;
+  max-width: 1024px;
   margin: 0 auto;
   -webkit-font-smoothing: antialiased;
   -moz-font-smoothing: antialiased;
@@ -30,4 +30,4 @@ input.small {
 td.fuel-savings-label {
   width: 175px; }
 
-/*# sourceMappingURL=main.1dd3546d21c56c6a8320.css.map*/
+/*# sourceMappingURL=main.8b5129f47d3ec48813de.css.map*/
