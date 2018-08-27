@@ -5,6 +5,7 @@ import {
   watchCreateApp,
   watchDeleteApp,
   watchGetIngresses,
+  watchGetPods,
 } from './k8sSaga';
 
 export default function* rootSaga() {
@@ -15,5 +16,6 @@ export default function* rootSaga() {
     watchCreateApp(),
     watchGetIngresses(),
     watchDeleteApp(),
+    watchGetPods(),
   ];
 }

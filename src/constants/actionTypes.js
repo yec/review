@@ -58,5 +58,22 @@ export const GET_INGRESSES_REQUEST = 'GET_INGRESSES_REQUEST';
 export const GET_INGRESSES_SUCCESS = 'GET_INGRESSES_SUCCESS';
 export const GET_INGRESSES_FAILURE = 'GET_INGRESSES_FAILURE';
 
+/**
+ * pods
+ */
+export const GET_PODS_REQUEST = 'GET_PODS_REQUEST';
+export const GET_PODS_SUCCESS = 'GET_PODS_SUCCESS';
+export const GET_PODS_FAILURE = 'GET_PODS_FAILURE';
+
+export const DELETE_PODS_REQUEST = 'DELETE_PODS_REQUEST';
+export const DELETE_PODS_SUCCESS = 'DELETE_PODS_SUCCESS';
+export const DELETE_PODS_FAILURE = 'DELETE_PODS_FAILURE';
+
+/**
+ * replicasets
+ */
+export const DELETE_REPLICASETS_REQUEST = 'DELETE_REPLICASETS_REQUEST';
+export const DELETE_REPLICASETS_SUCCESS = 'DELETE_REPLICASETS_SUCCESS';
+export const DELETE_REPLICASETS_FAILURE = 'DELETE_REPLICASETS_FAILURE';
 
 // http://review.star-dev.casino.internal/k8s/apis/extensions/v1beta1/namespaces/helloworld/ingresses

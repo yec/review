@@ -3,6 +3,7 @@ import {
   GET_NAMESPACE_SUCCESS,
   CREATE_INGRESS_SUCCESS,
   GET_INGRESSES_SUCCESS,
+  GET_PODS_SUCCESS,
 } from '../constants/actionTypes';
 
 // IMPORTANT: Note that with Redux, state should NEVER be changed.
@@ -10,7 +11,7 @@ import {
 // create a copy of the state passed and set new values on the copy.
 // Note that I'm using Object.assign to create a copy of current state
 // and update values on the copy.
-export default function k8sReducer(state = { requesting: false, ingresses: { items : [] } }, action) {
+export default function k8sReducer(state = { requesting: false, pods: { items : [] }, ingresses: { items : [] } }, action) {
   let newState;
 
   switch (action.type) {
@@ -29,10 +30,9 @@ export default function k8sReducer(state = { requesting: false, ingresses: { ite
       console.log(action);
       return state;
     case GET_INGRESSES_SUCCESS:
-      // For this example, just simulating a save by changing date modified.
-      // In a real app using Redux, you might use redux-thunk and handle the async call in fuelSavingsActions.js
-      console.log(action);
       return {...state, ingresses: action.result};
+    case GET_PODS_SUCCESS:
+      return {...state, pods: action.result};
     default:
       return state;
   }

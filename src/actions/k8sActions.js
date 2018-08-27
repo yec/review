@@ -49,3 +49,12 @@ export function getIngresses() {
     type: types.GET_INGRESSES_REQUEST,
   };
 }
+
+/**
+ * Pods
+ */
+export function getPods() {
+  return {
+    type: types.GET_PODS_REQUEST,
+  };
+}

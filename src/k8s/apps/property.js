@@ -47,6 +47,10 @@ export function deployment() {
               ],
               "env": [
                 {
+                  "name": "DOMAIN",
+                  "value": namespace.metadata.name + '.star-dev.casino.internal'
+                },
+                {
                   "name": "GIT_BRANCH",
                   "value": namespace.metadata.annotations.branch
                 },

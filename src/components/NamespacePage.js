@@ -38,6 +38,22 @@ const CreateNamespaceForm = withFormik({
   );
 });
 
+const Pods = ({ pods, namespace, app }) => {
+  return pods.items.map(pod => {
+    if (namespace.metadata.name == pod.metadata.namespace
+      && pod.metadata.labels.app == app
+    ) {
+      return (<div key={pod.metadata.uid} >
+        <strong>{pod.metadata.name} {pod.status.phase}</strong>
+        {pod.spec.containers.map(container => {
+          const key = pod.metadata.uid + container.name
+          return <pre key={key} style={{fontSize: 12}}>kubectl exec -it {pod.metadata.name} -n {namespace.metadata.name} -c {container.name} /bin/bash</pre>
+        })}
+      </div>);
+    }
+  });
+}
+
 const Ingresses = ({ ingresses, namespace, app }) => {
   return ingresses.items.map(ingress => {
     if (namespace.metadata.name == ingress.metadata.namespace
@@ -60,18 +76,18 @@ const AppActions = ({ app, createApp, deleteApp  }) => {
   </div>
 };
 
-const AppList = ({ namespace, ingresses }) => {
+const AppList = ({ namespace, ingresses, pods }) => {
   console.log(namespace);
 
   return (
     <React.Fragment>
       <h3>Apps</h3>
       <ul>
-        <li>nginx <Ingresses app={'nginx'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="nginx" /></li>
-        <li>mysql <Ingresses app={'mysql'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="mysql" /></li>
-        <li>starclub <Ingresses app={'starclub'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="starclub" /></li>
-        <li>starplay <Ingresses app={'starplay'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="starplay" /></li>
-        <li>property <Ingresses app={'property'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="property" /></li>
+        <li>nginx <Pods app={'nginx'} namespace={namespace} pods={pods} /><Ingresses app={'nginx'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="nginx" /></li>
+        <li>mysql <Pods app={'mysql'} namespace={namespace} pods={pods} /><Ingresses app={'mysql'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="mysql" /></li>
+        <li>starclub <Pods app={'starclub'} namespace={namespace} pods={pods} /><Ingresses app={'starclub'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="starclub" /></li>
+        <li>starplay <Pods app={'starplay'} namespace={namespace} pods={pods} /><Ingresses app={'starplay'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="starplay" /></li>
+        <li>property <Pods app={'property'} namespace={namespace} pods={pods} /><Ingresses app={'property'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="property" /></li>
       </ul>
     </React.Fragment>
   );
@@ -89,11 +105,12 @@ const bindNamespaceActions = (namespace, actionMap) => {
   return namespace;
 }
 
-const NamespacePage = ({ getIngresses, getNamespace, createNamespace, deleteNamespace, createApp, deleteApp, k8s }) => {
+const NamespacePage = ({ getPods, getIngresses, getNamespace, createNamespace, deleteNamespace, createApp, deleteApp, k8s }) => {
 
   if (!window.hydrate) {
     window.hydrate = 1;
     getIngresses();
+    getPods();
     getNamespace();
   }
 
@@ -108,7 +125,7 @@ const NamespacePage = ({ getIngresses, getNamespace, createNamespace, deleteName
         <li key={item.metadata.uid}>           {item.status.phase}
          <Link to={'/app/' + item.metadata.name}>{item.metadata.annotations.branch}</Link>
           <button onClick={e => { deleteNamespace(item.metadata.name) } }>delete</button>
-          <Route path={'/app/' + item.metadata.name} render={props => <AppList ingresses={k8s.ingresses} namespace={bindNamespaceActions({...item}, { deleteApp, createApp })} />} />
+          <Route path={'/app/' + item.metadata.name} render={props => <AppList pods={k8s.pods} ingresses={k8s.ingresses} namespace={bindNamespaceActions({...item}, { deleteApp, createApp })} />} />
         </li>))}
       </ul>
       {/* <pre>{k8s.namespaces && JSON.stringify(k8s.namespaces.items, null, 2)}</pre> */}

@@ -51,6 +51,29 @@ export function* watchGetIngresses() {
   yield* takeLatest(types.GET_INGRESSES_REQUEST, getIngresses);
 }
 
+/**
+ * pods
+ */
+export function* getPods() {
+
+  const config = {
+    method: 'GET',
+  };
+  const uri = url.resolve(K8S_URL, '/k8s/api/v1/pods');
+
+  try {
+    yield call(callApi, () => fetch(uri, config), [types.GET_PODS_SUCCESS, types.GET_PODS_FAILURE]);
+    const state = yield select();
+    console.log(state);
+  } catch(error) {
+    // yield put(appActions.showMessage('Login Error:', error.message, 'danger'));
+  }
+}
+
+export function* watchGetPods() {
+  yield* takeLatest(types.GET_PODS_REQUEST, getPods);
+}
+
 export function* createNamespace({ namespace }) {
 
   const body = {
@@ -165,32 +188,27 @@ export function* watchCreateApp() {
  */
 export function* deleteApp({ app, namespace }) {
 
-  const deploymentconfig = {
-    method: 'DELETE',
-  };
-  const deploymenturi = url.resolve(K8S_URL, `/k8s/apis/extensions/v1beta1/namespaces/${namespace.metadata.name}/deployments?labelSelector=app%3D${app}`);
-
-  const serviceconfig = {
-    method: 'DELETE',
-  };
-  const serviceuri = url.resolve(K8S_URL, `/k8s/api/v1/namespaces/${namespace.metadata.name}/services/${app}`);
-
-  const ingressconfig = {
-    method: 'DELETE',
-  };
-  const ingressuri = url.resolve(K8S_URL, `/k8s/apis/extensions/v1beta1/namespaces/${namespace.metadata.name}/ingresses?labelSelector=app%3D${app}`);
+  const deleteconfig = { method: 'DELETE' };
+  const deploymenturi  = url.resolve(K8S_URL, `/k8s/apis/extensions/v1beta1/namespaces/${namespace.metadata.name}/deployments?labelSelector=app%3D${app}`);
+  const serviceuri     = url.resolve(K8S_URL, `/k8s/api/v1/namespaces/${namespace.metadata.name}/services/${app}`);
+  const ingressuri     = url.resolve(K8S_URL, `/k8s/apis/extensions/v1beta1/namespaces/${namespace.metadata.name}/ingresses?labelSelector=app%3D${app}`);
+  const replicasetsuri = url.resolve(K8S_URL, `/k8s/apis/extensions/v1beta1/namespaces/${namespace.metadata.name}/replicasets?labelSelector=app%3D${app}`);
+  const podsuri        = url.resolve(K8S_URL, `/k8s/api/v1/namespaces/${namespace.metadata.name}/pods?labelSelector=app%3D${app}`);
 
   try {
     // deployment
-    yield call(callApi, () => fetch(deploymenturi, deploymentconfig), [types.DELETE_DEPLOYMENT_SUCCESS, types.DELETE_DEPLOYMENT_FAILURE]);
-
+    yield call(callApi, () => fetch(deploymenturi, deleteconfig), [types.DELETE_DEPLOYMENT_SUCCESS, types.DELETE_DEPLOYMENT_FAILURE]);
     // service
-    yield call(callApi, () => fetch(serviceuri, serviceconfig), [types.DELETE_SERVICE_SUCCESS, types.DELETE_SERVICE_FAILURE]);
-
-    // // ingress
-    yield call(callApi, () => fetch(ingressuri, ingressconfig), [types.DELETE_INGRESS_SUCCESS, types.DELETE_INGRESS_FAILURE]);
+    yield call(callApi, () => fetch(serviceuri, deleteconfig), [types.DELETE_SERVICE_SUCCESS, types.DELETE_SERVICE_FAILURE]);
+    // ingress
+    yield call(callApi, () => fetch(ingressuri, deleteconfig), [types.DELETE_INGRESS_SUCCESS, types.DELETE_INGRESS_FAILURE]);
+    // replicasets
+    yield call(callApi, () => fetch(replicasetsuri, deleteconfig), [types.DELETE_REPLICASETS_SUCCESS, types.DELETE_REPLICASETS_FAILURE]);
+    // pods
+    yield call(callApi, () => fetch(podsuri, deleteconfig), [types.DELETE_PODS_SUCCESS, types.DELETE_PODS_FAILURE]);
 
     yield put(k8sActions.getIngresses());
+    yield put(k8sActions.getPods());
   } catch(error) {
     // yield put(k8sActions.get('Login Error:', error.message, 'danger'));
   }
