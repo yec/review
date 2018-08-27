@@ -70,6 +70,7 @@ const AppList = ({ namespace, ingresses }) => {
         <li>nginx <Ingresses app={'nginx'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="nginx" /></li>
         <li>mysql <Ingresses app={'mysql'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="mysql" /></li>
         <li>starclub <Ingresses app={'starclub'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="starclub" /></li>
+        <li>starplay <Ingresses app={'starplay'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="starplay" /></li>
         <li>property <Ingresses app={'property'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="property" /></li>
       </ul>
     </React.Fragment>
@@ -105,9 +106,9 @@ const NamespacePage = ({ getIngresses, getNamespace, createNamespace, deleteName
 
       <ul>{k8s.namespaces && k8s.namespaces.items.map(item => (
         <li key={item.metadata.uid}>           {item.status.phase}
-         <Link to={item.metadata.name}>{item.metadata.annotations.branch}</Link>
+         <Link to={'/app/' + item.metadata.name}>{item.metadata.annotations.branch}</Link>
           <button onClick={e => { deleteNamespace(item.metadata.name) } }>delete</button>
-          <Route path={'/' + item.metadata.name} render={props => <AppList ingresses={k8s.ingresses} namespace={bindNamespaceActions({...item}, { deleteApp, createApp })} />} />
+          <Route path={'/app/' + item.metadata.name} render={props => <AppList ingresses={k8s.ingresses} namespace={bindNamespaceActions({...item}, { deleteApp, createApp })} />} />
         </li>))}
       </ul>
       {/* <pre>{k8s.namespaces && JSON.stringify(k8s.namespaces.items, null, 2)}</pre> */}
