@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, Route } from 'react-router-dom';
 import { withFormik } from 'formik';
+import * as apps from '../k8s/apps';
 import * as yup from 'yup';
 
 const CreateNamespaceForm = withFormik({
@@ -77,17 +78,18 @@ const AppActions = ({ app, createApp, deleteApp  }) => {
 };
 
 const AppList = ({ namespace, ingresses, pods }) => {
-  console.log(namespace);
-
   return (
     <React.Fragment>
       <h3>Apps</h3>
       <ul>
-        <li>nginx <Pods app={'nginx'} namespace={namespace} pods={pods} /><Ingresses app={'nginx'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="nginx" /></li>
-        <li>mysql <Pods app={'mysql'} namespace={namespace} pods={pods} /><Ingresses app={'mysql'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="mysql" /></li>
-        <li>starclub <Pods app={'starclub'} namespace={namespace} pods={pods} /><Ingresses app={'starclub'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="starclub" /></li>
-        <li>starplay <Pods app={'starplay'} namespace={namespace} pods={pods} /><Ingresses app={'starplay'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="starplay" /></li>
-        <li>property <Pods app={'property'} namespace={namespace} pods={pods} /><Ingresses app={'property'} namespace={namespace} ingresses={ingresses} /> <AppActions createApp={namespace.createApp} deleteApp={namespace.deleteApp} app="property" /></li>
+        {Object.keys(apps).map(app => (
+          <li key={app}>
+            {app}
+            <Pods       app={app} namespace={namespace} pods={pods} />
+            <Ingresses  app={app} namespace={namespace} ingresses={ingresses} />
+            <AppActions app={app} createApp={namespace.createApp} deleteApp={namespace.deleteApp} />
+          </li>
+        ))}
       </ul>
     </React.Fragment>
   );
