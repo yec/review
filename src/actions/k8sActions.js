@@ -32,6 +32,15 @@ export function createApp(app) {
   };
 }
 
+export function deleteApp(app) {
+  const namespace = this;
+  return {
+    type: types.DELETE_APP_REQUEST,
+    namespace,
+    app
+  }
+}
+
 /**
  * Ingress
  */

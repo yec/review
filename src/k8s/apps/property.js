@@ -47,10 +47,6 @@ export function deployment() {
               ],
               "env": [
                 {
-                  "name": "DOMAIN",
-                  "value": `${namespace.metadata.name}.star-dev.casino.internal`
-                },
-                {
                   "name": "GIT_BRANCH",
                   "value": namespace.metadata.annotations.branch
                 },
@@ -138,6 +134,20 @@ export function ingress() {
           "http": {
             "paths": [
               {
+                "backend": {
+                  "serviceName": name,
+                  "servicePort": 80
+                }
+              },
+              {
+                "path": "/sydney",
+                "backend": {
+                  "serviceName": name,
+                  "servicePort": 80
+                }
+              },
+              {
+                "path": "/goldcoast",
                 "backend": {
                   "serviceName": name,
                   "servicePort": 80

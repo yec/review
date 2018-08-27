@@ -159,3 +159,43 @@ export function* createApp({ app, namespace }) {
 export function* watchCreateApp() {
   yield* takeLatest(types.CREATE_APP_REQUEST, createApp);
 }
+
+/**
+ * Delete app
+ */
+export function* deleteApp({ app, namespace }) {
+
+  const deploymentconfig = {
+    method: 'DELETE',
+  };
+  const deploymenturi = url.resolve(K8S_URL, `/k8s/apis/extensions/v1beta1/namespaces/${namespace.metadata.name}/deployments?labelSelector=app%3D${app}`);
+
+  const serviceconfig = {
+    method: 'DELETE',
+  };
+  const serviceuri = url.resolve(K8S_URL, `/k8s/api/v1/namespaces/${namespace.metadata.name}/services/${app}`);
+
+  const ingressconfig = {
+    method: 'DELETE',
+  };
+  const ingressuri = url.resolve(K8S_URL, `/k8s/apis/extensions/v1beta1/namespaces/${namespace.metadata.name}/ingresses?labelSelector=app%3D${app}`);
+
+  try {
+    // deployment
+    yield call(callApi, () => fetch(deploymenturi, deploymentconfig), [types.DELETE_DEPLOYMENT_SUCCESS, types.DELETE_DEPLOYMENT_FAILURE]);
+
+    // service
+    yield call(callApi, () => fetch(serviceuri, serviceconfig), [types.DELETE_SERVICE_SUCCESS, types.DELETE_SERVICE_FAILURE]);
+
+    // // ingress
+    yield call(callApi, () => fetch(ingressuri, ingressconfig), [types.DELETE_INGRESS_SUCCESS, types.DELETE_INGRESS_FAILURE]);
+
+    yield put(k8sActions.getIngresses());
+  } catch(error) {
+    // yield put(k8sActions.get('Login Error:', error.message, 'danger'));
+  }
+}
+
+export function* watchDeleteApp() {
+  yield* takeLatest(types.DELETE_APP_REQUEST, deleteApp);
+}
