@@ -2,6 +2,7 @@ const app = "nginx";
 const name = "nginx";
 
 export function deployment() {
+  const namespace = this;
   return {
     "kind": "Deployment",
     "apiVersion": "extensions/v1beta1",
@@ -26,18 +27,51 @@ export function deployment() {
           }
         },
         "spec": {
+          "volumes": [
+            {
+              "name": "site-data",
+              "nfs": {
+                "server": "10.133.168.132",
+                "path": `/distdata01/review.star-dev.casino.internal`
+              }
+            }
+          ],
+          "initContainers": [
+            {
+              "name": "init-web",
+              "image": "alpine/git",
+              "volumeMounts": [
+                {
+                  "name": "site-data",
+                  "mountPath": "/git",
+                  "subPath": `${namespace.metadata.name}/${app}`
+                }
+              ],
+              "args": [
+                "clone",
+                "https://github.com/yec/monaco-editor-samples.git",
+                "."
+              ],
+              "imagePullPolicy": "Never"
+            }
+          ],
           "containers": [
             {
               "name": "web",
-              "image": "nginx:latest",
+              "image": "nginx",
               "ports": [
                 {
                   "containerPort": 80,
                   "protocol": "TCP"
                 }
               ],
-              "resources": {
-              },
+              "volumeMounts": [
+                {
+                  "name": "site-data",
+                  "mountPath": "/usr/share/nginx/html",
+                  "subPath": `${namespace.metadata.name}/${app}`
+                }
+              ],
               "imagePullPolicy": "Never"
             }
           ],
